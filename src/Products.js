@@ -7,6 +7,16 @@ const Products = ()=> {
   const [search, setSearch] = useState('');
   const [checkbox, setCheckbox] = useState(false);
 
+  const [productList, setProductList] = useState(products.map(p => p));
+
+  useEffect(() => {
+    if(checkbox){
+      setProductList(products.filter(p => p.inStock));
+    } else {
+      setProductList(products.map(p => p));
+    }
+  },[checkbox])
+
   return (
     <div>
       <div id='searchAndCheckBoxDiv'>
@@ -19,8 +29,8 @@ const Products = ()=> {
         </div>
       </div>
       <ul>
-        {
-          products.map( product => {
+        {(!checkbox) ?
+          products.filter(_p => _p.name.includes(search)).map( product => {
             return (
               <li key={ product.id }>
                 { product.name }
@@ -28,6 +38,15 @@ const Products = ()=> {
               </li>
             );
           })
+        :
+        products.filter(p => p.inStock).filter(_p => _p.name.includes(search)).map( product => {
+          return (
+            <li key={ product.id }>
+              { product.name }
+              { !!product.inStock && <em> is in stock</em>}
+            </li>
+          );
+        })
         }
       </ul>
     </div>
